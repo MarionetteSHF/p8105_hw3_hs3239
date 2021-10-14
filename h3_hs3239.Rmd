@@ -227,10 +227,38 @@ accel_df =
 
 ```
 
-The resulting dataset contains 50400 observations and 6 variables and contains 5 weeks of activity.
+The resulting dataset accel_df contains 50400 observations and 6 variables and contains 5 weeks of activity. The data set row is divided by weekend and weekday
 
 
 ```{r}
-
+accel_df %>% 
+  group_by(day_id, day, week) %>%
+  summarize(total_activity = sum(activity_count)) %>% 
+   arrange(day)%>%
+  knitr::kable()
+ 
 
 ```
+
+
+The totaly activity on saturday in week 4 and 5 are less than other days
+
+
+```{r}
+accel_df %>% 
+  ggplot(aes(x = activity_minute, y = activity_count, color = day)) + 
+  geom_line() +
+  labs(
+    title = " Activity Count by Day",
+    x = "Time",
+    y = "Activity",
+    caption = "Data from the accel dataset"
+  ) + 
+  scale_x_continuous(
+    breaks = c(0, 360, 720, 1080, 1440), 
+    labels = c("12AM", "6AM", "12PM", "6PM", "11:59PM"),
+    limits = c(0, 1440)
+    )
+  
+```
+Conclusion:The totaly activity on the afternoon is more than other time of period
