@@ -95,14 +95,142 @@ instacart %>%
 
 ```
 
-
+Problem2
 
 ```{r}
+library(p8105.datasets)
+brfss_smart2010=p8105.datasets::brfss_smart2010
+```
+
+
+import and clean the data
+```{r}
+brfss_df=
+brfss_smart2010%>% 
+    janitor::clean_names()%>%
+ filter(topic == "Overall Health") %>%
+    separate(locationdesc, into = c('state', 'location'), sep = ' - ') %>%
+    mutate(response = as.factor(response)) %>%
+    filter(response == "Excellent"  | response == "Very good" |          response == "Good" | response == "Fair" | response == "Poor") 
+
+#assign 5 levels to response variables
+brfss_df$response= factor(brfss_df$response,
+  levels <- (c("Excellent","Very good", "Good", "Fair", "Poor")))
+
+
 
 ```
 
 
 
 ```{r}
+brfss_df_location = filter(brfss_df, year == "2002")%>%
+  group_by(state)%>%
+  distinct(location)%>%
+  summarise(n = n())%>% 
+  filter(n >=7)
+
+
+```
+
+In 2002, CT FL MA NC NJ PA observed at 7 or more locations
+
+
+```{r}
+brfss_df_location_2010 = filter(brfss_df, year == "2010")%>%
+  group_by(state)%>%
+  distinct(location)%>%
+  summarise(n = n())%>% 
+  filter(n >=7)
+
+```
+In 2002, CO PA SC OH MA NY NE WA CA MD NC TX NJ FL were observed at 7 or more locations
+
+```{r}
+brfss_excellent =filter(brfss_df, response == "Excellent")%>% 
+  select(year, state,data_value)%>%
+  group_by(state,year)%>%
+  mutate(
+    value_mean = mean(data_value, na.rm = TRUE)
+  )%>%
+  select(-data_value)
+ 
+  
+ 
+  
+  ggplot(brfss_excellent,aes(x = year, y = value_mean, group=state)) +
+ geom_line()+
+
+
+  labs(title = " “spaghetti” plot  ",
+       x =  "year",
+       y = "mean_value",
+       caption = "Data from brfss_smart2010 datasets")
+
+
+```
+
+
+
+
+Two panel plot
+```{r}
+brr=
+brfss_df%>%
+
+  filter( year == 2006 | year== 2010 )%>%
+    filter(state =="NY")%>%
+  drop_na(response)%>%
+  group_by(location)
+  
+    ggplot(brr, aes(x = response, y = data_value,group=location))+
+      geom_point()+
+      geom_line()+
+     facet_grid(. ~ year) 
+
+```
+
+
+
+
+P3
+
+```{r}
+accel_df = 
+  read_csv("./data/accel_data.csv", col_types = cols(
+      week = col_integer(),
+      day_id = col_integer()
+      )) %>%
+  janitor::clean_names() %>% 
+  mutate(
+    weekend = case_when(
+      day == "Monday" ~ "weekday",
+      day == "Tuesday" ~ "weekday",
+      day == "Wednesday" ~ "weekday",
+      day == "Thursday" ~ "weekday",
+      day == "Friday" ~ "weekday",
+      day == "Saturday" ~ "weekend",
+      day == "Sunday" ~ "weekend"
+)) %>% 
+  relocate("weekend") %>%
+  pivot_longer(
+    activity_1:activity_1440, 
+    names_to = "activity",
+    values_to = "activity_count") %>% 
+  separate(activity, into = c("activity", "activity_minute")) %>%
+  select(-activity) %>%
+  mutate(
+    activity_minute = as.numeric(activity_minute),
+    day = factor(day),
+    day = fct_relevel(day, c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+    )
+
+```
+
+The resulting dataset contains 50400 observations and 6 variables and contains 5 weeks of activity.
+
+
+```{r}
+
 
 ```
