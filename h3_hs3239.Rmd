@@ -1,0 +1,32 @@
+---
+title: "p8105_hw3_hs3239"
+author: "hanfu shi"
+date: "2021/10/14"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(p8105.datasets)
+data("instacart")
+
+```
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(devtools)
+```
+
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
