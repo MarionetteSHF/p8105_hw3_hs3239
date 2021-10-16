@@ -45,10 +45,10 @@ id_number= count(instacart_aisles,aisle_id)
 
 
 ```
-The dataset contains`r nrow(instacart)` rows and `r ncol(instacart)` columns(variables)
+The dataset contains`r nrow(instacart)` rows and `r ncol(instacart)` columns(variables) Observations are the level of items in order by user. 
 The key variables are Aisles, Aisles's ID and order ID. There are`r nrow(id_number)` aisles and fresh vegetables are the most item ordered.
 
-
+The plot that shows the number of items ordered in each aisle, limiting this to aisles with more than 10000 items ordered
 ```{r}
 #P1 plot
 instacart %>% 
@@ -67,7 +67,7 @@ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+
        caption = "Data from instacart datasets")
 ```
 
-
+The table shows the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”.
 ```{r}
 #p1 table1
 instacart %>% 
@@ -80,7 +80,7 @@ instacart %>%
   knitr::kable()
 ```
 
-
+The table shows the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week
 ```{r}
 #p1 table2
 instacart %>% 
@@ -98,12 +98,13 @@ instacart %>%
 Problem2
 
 ```{r}
+# load the data
 library(p8105.datasets)
 brfss_smart2010=p8105.datasets::brfss_smart2010
 ```
 
 
-import and clean the data
+import and clean the data: give appropriate names, keep "Overall Health" topic, include only responses from "Excellent" to "Poor", and give orders to response
 ```{r}
 brfss_df=
 brfss_smart2010%>% 
@@ -146,6 +147,7 @@ brfss_df_location_2010 = filter(brfss_df, year == "2010")%>%
 ```
 In 2002, CO PA SC OH MA NY NE WA CA MD NC TX NJ FL were observed at 7 or more locations
 
+Keep excellent response and make a plot showing a line for each state across years
 ```{r}
 brfss_excellent =filter(brfss_df, response == "Excellent")%>% 
   select(year, state,data_value)%>%
@@ -173,7 +175,7 @@ brfss_excellent =filter(brfss_df, response == "Excellent")%>%
 
 
 
-Two panel plot
+Make a two- panel plot showing, for the years 2006, and 2010, distribution of data_value for responses (“Poor” to “Excellent”) among locations in NY State
 ```{r}
 brr=
 brfss_df%>%
@@ -194,7 +196,7 @@ brfss_df%>%
 
 
 P3
-
+load data and  include all originally observed variables and values; have useful variable names; include a weekday vs weekend variable; and encode data with reasonable variable classes.
 ```{r}
 accel_df = 
   read_csv("./data/accel_data.csv", col_types = cols(
@@ -228,8 +230,19 @@ accel_df =
 ```
 
 The resulting dataset accel_df contains 50400 observations and 6 variables and contains 5 weeks of activity. The data set row is divided by weekend and weekday
+_day_id_ is a  variable and indicates the day the accelerometer data was collected.
+
+ _day_ is a  variable that was created in order to make the original `day_id` variable easier to understand.
+
+ _week_ is a  variable and indicates the week the accelerometer data was collected.
+
+ _weekend_ is a  variable that indicates whether the information was collected on a weekend vs. a weekday.
+
+ _activity_minute_ is a  variable that indicates the minute when the activity count was collected, corresponding to each minute of a 24-hour day starting at midnight.
 
 
+
+Aggregate accross minutes to create a total activity variable for each day, and create a table showing these totals
 ```{r}
 accel_df %>% 
   group_by(day_id, day, week) %>%
@@ -243,7 +256,7 @@ accel_df %>%
 
 The totaly activity on saturday in week 4 and 5 are less than other days
 
-
+Make a single-panel plot that shows the 24-hour activity time courses for each day and use color to indicate day of the week
 ```{r}
 accel_df %>% 
   ggplot(aes(x = activity_minute, y = activity_count, color = day)) + 
