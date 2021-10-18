@@ -2,7 +2,7 @@
 title: "p8105_hw3_hs3239"
 author: "hanfu shi"
 date: "2021/10/14"
-output: html_document
+output: github_document
 editor_options: 
   chunk_output_type: console
 ---
